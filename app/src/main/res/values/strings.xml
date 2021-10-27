@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Package Viewer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="app_info">App info</string>
+    <string name="launch">Launch</string>
+    <string name="action_user_installed">User-installed</string>
+    <string name="action_pre_installed">Pre-installed</string>
+    <string name="action_all_apps">All apps</string>
+    <string name="action_system_apps">System apps</string>
+    <string name="copy_package_name">Copy package name</string>
+    <string name="menu_more_apps">More apps</string>
+    <string name="menu_rate_me">Rate me</string>
+</resources>
