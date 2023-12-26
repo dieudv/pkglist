@@ -2,18 +2,19 @@ package com.pkglist.adapter
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.pkglist.R
 import com.pkglist.databinding.ListItemPkgBinding
-import android.graphics.drawable.Drawable
-import android.util.Log
 
 
-class PkgAdapter internal constructor(private val context: Context, val packages: ArrayList<ApplicationInfo>) : RecyclerView.Adapter<PkgAdapter.ViewHolder>() {
+class PkgAdapter internal constructor(
+    private val context: Context,
+    val packages: ArrayList<ApplicationInfo>
+) : RecyclerView.Adapter<PkgAdapter.ViewHolder>() {
     private var mClickListener: ItemClickListener? = null
     private var mItemRemoved: ItemRemoved? = null
 
@@ -40,7 +41,8 @@ class PkgAdapter internal constructor(private val context: Context, val packages
     }
 
     // stores and recycles views as they are scrolled off screen
-    inner class ViewHolder internal constructor(private val binding: ListItemPkgBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class ViewHolder internal constructor(private val binding: ListItemPkgBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         override fun onClick(view: View) {
             if (mClickListener != null) mClickListener!!.onItemClick(view, adapterPosition)
         }

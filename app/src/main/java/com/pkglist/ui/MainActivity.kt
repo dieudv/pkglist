@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
                 }
+
                 R.id.nav_rate_me -> {
                     val packageName = this.packageName
                     val uri: Uri = Uri.parse("market://details?id=$packageName")

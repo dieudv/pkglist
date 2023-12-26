@@ -9,7 +9,13 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -57,14 +63,19 @@ class HomeFragment : Fragment(), ItemClickListener, PkgAdapter.ItemRemoved {
                 R.id.copy_package_name -> {
                     requireContext().copyToClipboard(adapter.getItem(position).packageName)
                 }
+
                 R.id.launch -> {
-                    val launchIntent = requireActivity().packageManager.getLaunchIntentForPackage(adapter.getItem(position).packageName)
+                    val launchIntent = requireActivity().packageManager.getLaunchIntentForPackage(
+                        adapter.getItem(position).packageName
+                    )
                     if (launchIntent != null) {
                         startActivity(launchIntent)
                     } else {
-                        Toast.makeText(requireContext(), "Can't open this app!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Can't open this app!", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
+
                 R.id.app_info -> {
                     val i = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     i.addCategory(Intent.CATEGORY_DEFAULT)
@@ -95,12 +106,15 @@ class HomeFragment : Fragment(), ItemClickListener, PkgAdapter.ItemRemoved {
                 adapter = PkgAdapter(requireContext(), getPackages(APP_ALL))
 
             }
+
             R.id.action_system -> {
                 adapter = PkgAdapter(requireContext(), getPackages(APP_SYSTEM))
             }
+
             R.id.action_pre_installed -> {
                 adapter = PkgAdapter(requireContext(), getPackages(APP_PRE_INSTALLED))
             }
+
             R.id.action_user_installed -> {
                 adapter = PkgAdapter(requireContext(), getPackages(APP_USER_INSTALLED))
             }
@@ -118,36 +132,46 @@ class HomeFragment : Fragment(), ItemClickListener, PkgAdapter.ItemRemoved {
         when (flag) {
             APP_SYSTEM -> {
                 for (pkg in allPackages) {
-                    val launchIntent = requireActivity().packageManager.getLaunchIntentForPackage(pkg.packageName)
+                    val launchIntent =
+                        requireActivity().packageManager.getLaunchIntentForPackage(pkg.packageName)
                     if (launchIntent == null) {
                         packages.add(pkg)
                     }
                 }
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.action_system_apps)
+                (activity as AppCompatActivity).supportActionBar?.title =
+                    getString(R.string.action_system_apps)
                 return packages
             }
+
             APP_PRE_INSTALLED -> {
                 for (pkg in allPackages) {
-                    val launchIntent = requireActivity().packageManager.getLaunchIntentForPackage(pkg.packageName)
+                    val launchIntent =
+                        requireActivity().packageManager.getLaunchIntentForPackage(pkg.packageName)
                     if (launchIntent != null && pkg.flags and ApplicationInfo.FLAG_SYSTEM != 0) {
                         packages.add(pkg)
                     }
                 }
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.action_pre_installed)
+                (activity as AppCompatActivity).supportActionBar?.title =
+                    getString(R.string.action_pre_installed)
                 return packages
             }
+
             APP_USER_INSTALLED -> {
                 for (pkg in allPackages) {
-                    val launchIntent = requireActivity().packageManager.getLaunchIntentForPackage(pkg.packageName)
+                    val launchIntent =
+                        requireActivity().packageManager.getLaunchIntentForPackage(pkg.packageName)
                     if (launchIntent != null && pkg.flags and ApplicationInfo.FLAG_SYSTEM == 0) {
                         packages.add(pkg)
                     }
                 }
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.action_user_installed)
+                (activity as AppCompatActivity).supportActionBar?.title =
+                    getString(R.string.action_user_installed)
                 return packages
             }
+
             else -> {
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.action_all_apps)
+                (activity as AppCompatActivity).supportActionBar?.title =
+                    getString(R.string.action_all_apps)
                 return allPackages
             }
         }
