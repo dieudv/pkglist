@@ -1,5 +1,6 @@
 package com.pkglist.ui
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -19,7 +21,9 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pkglist.R
 import com.pkglist.adapter.PkgAdapter
@@ -27,13 +31,12 @@ import com.pkglist.adapter.PkgAdapter.ItemClickListener
 import com.pkglist.databinding.FragmentHomeBinding
 
 
-class HomeFragment : Fragment(), ItemClickListener, PkgAdapter.ItemRemoved {
+class HomeFragment : Fragment(), MenuProvider, ItemClickListener, PkgAdapter.ItemRemoved {
 
     private var _binding: FragmentHomeBinding? = null
 
     private val binding get() = _binding!!
     private lateinit var adapter: PkgAdapter
-    private lateinit var mMenu: Menu
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,8 +50,7 @@ class HomeFragment : Fragment(), ItemClickListener, PkgAdapter.ItemRemoved {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
-
+        requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         binding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
         adapter = PkgAdapter(requireContext(), getPackages(APP_USER_INSTALLED))
         adapter.setClickListener(this)
@@ -92,19 +94,14 @@ class HomeFragment : Fragment(), ItemClickListener, PkgAdapter.ItemRemoved {
         adapter.packages.removeAt(position)
         adapter.notifyItemRemoved(position)
     }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        this.mMenu = menu
-        inflater.inflate(R.menu.main, menu)
-
-        super.onCreateOptionsMenu(menu, inflater)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.main, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
             R.id.action_all -> {
                 adapter = PkgAdapter(requireContext(), getPackages(APP_ALL))
-
             }
 
             R.id.action_system -> {
@@ -119,9 +116,10 @@ class HomeFragment : Fragment(), ItemClickListener, PkgAdapter.ItemRemoved {
                 adapter = PkgAdapter(requireContext(), getPackages(APP_USER_INSTALLED))
             }
         }
+
         adapter.setClickListener(this)
         binding.recyclerview.adapter = adapter
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     private fun getPackages(flag: Int): ArrayList<ApplicationInfo> {
@@ -189,7 +187,6 @@ class HomeFragment : Fragment(), ItemClickListener, PkgAdapter.ItemRemoved {
     }
 
     companion object {
-        private const val TAG = "HomeFragment"
         private const val APP_ALL = 0
         private const val APP_SYSTEM = 1
         private const val APP_PRE_INSTALLED = 2
